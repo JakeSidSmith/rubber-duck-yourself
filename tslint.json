@@ -8,7 +8,6 @@
   ],
   "rules": {
     "prettier": true,
-    "quotemark": [true, "single", "jsx-double", "avoid-template"],
     "linebreak-style": [true, "LF"],
     "semicolon": [true, "always", "ignore-interfaces"],
     "max-line-length": [true, 120],
