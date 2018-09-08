@@ -11,6 +11,17 @@ export const GREETINGS = [
 
 export const INITIAL_MESSAGES = ['Right', 'Alright', 'Uhuh', 'Mhm', 'Okay'];
 
+export const INITIAL_QUESTIONS = [
+  'How can I help?',
+  'What do you need?',
+  "What's the problem?",
+  "I'm all ears",
+  'What do you want to talk about?',
+  'Got something to talk about?',
+  'Need some help?',
+  "I'm here to help",
+];
+
 export const MESSAGES = INITIAL_MESSAGES.concat([
   'Yeah',
   'Continue',
