@@ -1,8 +1,25 @@
+* {
+  box-sizing: border-box;
+}
+
 html,
 body {
+  width: 100%;
+  height: 100%;
   padding: 0;
   margin: 0;
   background-color: $white;
   font-family: $font-family-base;
   font-size: $font-size-base;
+}
+
+textarea,
+input,
+button {
+  font-size: $font-size-base;
+}
+
+p {
+  margin-top: $margin-large;
+  margin-bottom: $margin-large;
 }

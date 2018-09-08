@@ -24,19 +24,23 @@ export const INITIAL_QUESTIONS = [
   "I'm here to help",
 ];
 
-export const MESSAGES = INITIAL_MESSAGES.concat([
+export const STANDARD_MESSAGES = INITIAL_MESSAGES.concat([
   'Yeah',
   'Continue',
   'Sure',
   'I see',
-  'And then',
   'Got ya',
   'I understand',
+  'Hmmm',
+  'Do tell',
+  'Tell me more',
+]);
+
+export const LONG_MESSAGES = [
   "I'm not sure I understand",
   'Any more details?',
   'What do you mean?',
-  'Hmmm',
-  'Do tell',
   'Anything else?',
   'What next?',
-]);
+  'And then',
+];

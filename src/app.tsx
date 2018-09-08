@@ -1,5 +1,10 @@
-import { ENTER_KEY_CODE, GREETINGS } from '^/constants';
-import { pickRandom } from '^/utils';
+import {
+  ENTER_KEY_CODE,
+  GREETINGS,
+  INITIAL_MESSAGES,
+  STANDARD_MESSAGES,
+} from '^/constants';
+import { pickPseudoRandom, pickRandom } from '^/utils';
 import React, { Component } from 'react';
 
 interface AppState {
@@ -7,6 +12,7 @@ interface AppState {
   lastMessages: string[];
   nextMessage: string;
   conversation: MessageProps[];
+  typing: boolean;
 }
 
 interface MessageProps {
@@ -17,15 +23,18 @@ interface MessageProps {
 // tslint:disable-next-line:variable-name
 const Message = ({ text, bot }: MessageProps) => {
   return (
-    <div>
-      <strong>{bot ? 'Ducky' : 'You'}</strong>
-      <p>{text}</p>
+    <div className="message">
+      <p className="user">{bot ? 'Ducky' : 'You'}</p>
+      <p className="text">{text}</p>
     </div>
   );
 };
 
 export default class App extends Component<{}, AppState> {
-  constructor(props: any) {
+  private timeout?: number;
+  private conversation?: HTMLDivElement;
+
+  public constructor(props: any) {
     super(props);
 
     this.state = {
@@ -33,17 +42,41 @@ export default class App extends Component<{}, AppState> {
       nextMessage: pickRandom(GREETINGS),
       value: '',
       conversation: [],
+      typing: false,
     };
+  }
+
+  public componentDidMount() {
+    this.queueNewMessage();
+  }
+
+  public componentDidUpdate() {
+    if (this.conversation) {
+      const scrollFromBottom = Math.abs(
+        this.conversation.scrollHeight -
+          this.conversation.offsetHeight -
+          this.conversation.scrollTop
+      );
+
+      if (scrollFromBottom <= 100) {
+        this.conversation.scrollTop = this.conversation.scrollHeight;
+      }
+    }
   }
 
   public render() {
     return (
       <div className="container">
-        <div className="conversation">
-          {this.state.conversation.map(Message)}
+        <div className="conversation" ref={this.getConversation}>
+          <div className="messages">
+            {this.state.conversation.map(Message)}
+            {this.state.typing && <p className="typing">Typing...</p>}
+          </div>
         </div>
         <form onSubmit={this.onSubmit}>
           <textarea
+            className="textarea"
+            placeholder="Type your message here"
             value={this.state.value}
             onKeyDown={this.onKeyPress}
             onChange={this.onChange}
@@ -53,15 +86,20 @@ export default class App extends Component<{}, AppState> {
     );
   }
 
+  private getConversation = (element: HTMLDivElement) => {
+    this.conversation = element;
+  };
+
   private onSubmit = (event?: React.FormEvent) => {
     if (event) {
       event.preventDefault();
     }
 
-    const [, ...lastMessages] = this.state.lastMessages;
+    if (this.conversation) {
+      this.conversation.scrollTop = this.conversation.scrollHeight;
+    }
 
     this.setState({
-      lastMessages: [...lastMessages, this.state.value],
       conversation: [
         ...this.state.conversation,
         {
@@ -71,17 +109,59 @@ export default class App extends Component<{}, AppState> {
       ],
       value: '',
     });
+
+    this.queueNewMessage();
   };
 
   private onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    window.clearTimeout(this.timeout);
+
     this.setState({
+      typing: false,
       value: event.target.value,
     });
   };
 
   private onKeyPress = (event: React.KeyboardEvent) => {
     if (event.keyCode === ENTER_KEY_CODE && !event.shiftKey) {
+      event.preventDefault();
       this.onSubmit();
     }
+  };
+
+  private queueNewMessage() {
+    window.clearTimeout(this.timeout);
+
+    this.setState({
+      typing: true,
+    });
+
+    this.timeout = window.setTimeout(
+      this.sendNewMessage,
+      200 + this.state.nextMessage.length * 50
+    );
+  }
+
+  private sendNewMessage = () => {
+    const [, ...lastLastMessages] = this.state.lastMessages;
+    const lastMessages = [...lastLastMessages, this.state.value];
+
+    this.setState({
+      typing: false,
+      lastMessages,
+      conversation: [
+        ...this.state.conversation,
+        {
+          text: this.state.nextMessage,
+          bot: true,
+        },
+      ],
+      nextMessage: pickPseudoRandom(
+        this.state.conversation.length > 1
+          ? STANDARD_MESSAGES
+          : INITIAL_MESSAGES,
+        lastMessages
+      ),
+    });
   };
 }
