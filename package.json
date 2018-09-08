@@ -65,7 +65,8 @@
     },
     "testRegex": "(/tests/.*|\\.(test|spec))\\.(js|jsx|ts|tsx)$",
     "testPathIgnorePatterns": [
-      "<rootDir>/tests/helpers/"
+      "<rootDir>/tests/helpers/",
+      "<rootDir>/_site/"
     ],
     "moduleFileExtensions": [
       "js",
