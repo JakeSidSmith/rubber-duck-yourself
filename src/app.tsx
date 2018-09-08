@@ -5,7 +5,7 @@ import {
   STANDARD_MESSAGES,
 } from '^/constants';
 import { pickPseudoRandom, pickRandom } from '^/utils';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 interface AppState {
   value: string;
@@ -30,16 +30,18 @@ const Message = ({ text, bot }: MessageProps) => {
   );
 };
 
-export default class App extends Component<{}, AppState> {
+export default class App extends PureComponent<{}, AppState> {
   private timeout?: number;
   private conversation?: HTMLDivElement;
 
   public constructor(props: any) {
     super(props);
 
+    const nextMessage = pickRandom(GREETINGS);
+
     this.state = {
       lastMessages: [],
-      nextMessage: pickRandom(GREETINGS),
+      nextMessage,
       value: '',
       conversation: [],
       typing: false,
@@ -143,8 +145,13 @@ export default class App extends Component<{}, AppState> {
   }
 
   private sendNewMessage = () => {
-    const [, ...lastLastMessages] = this.state.lastMessages;
-    const lastMessages = [...lastLastMessages, this.state.value];
+    const lastLastMessages = this.state.lastMessages;
+    const lastMessages = [
+      ...lastLastMessages.slice(
+        lastLastMessages.length > 4 ? lastLastMessages.length - 4 : 0
+      ),
+      this.state.nextMessage,
+    ];
 
     this.setState({
       typing: false,
