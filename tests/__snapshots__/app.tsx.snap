@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`app.tsx matches snapshot 1`] = `
+<p>
+  Hello, World!
+</p>
+`;

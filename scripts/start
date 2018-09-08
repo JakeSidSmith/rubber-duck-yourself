@@ -1,0 +1,8 @@
+#! /usr/bin/env bash
+
+concurrently \
+  --prefix='name' \
+  --names='webpack,jekyll ' \
+  --prefix-colors='red,green' \
+  "npm run watch-js" \
+  "bundle exec jekyll serve"
