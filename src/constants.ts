@@ -5,8 +5,8 @@ export const GREETINGS = [
   'Sup?',
   'Yo!',
   'Good day',
-  "What's up?", // tslint:disable-line:quotemark
-  "How's it going?", // tslint:disable-line:quotemark
+  "What's up?",
+  "How's it going?",
 ];
 
 export const INITIAL_MESSAGES = ['Right', 'Alright', 'Uhuh', 'Mhm', 'Okay'];
@@ -19,7 +19,7 @@ export const MESSAGES = INITIAL_MESSAGES.concat([
   'And then',
   'Got ya',
   'I understand',
-  "I'm not sure I understand", // tslint:disable-line:quotemark
+  "I'm not sure I understand",
   'Any more details?',
   'What do you mean?',
   'Hmmm',
