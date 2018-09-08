@@ -1,7 +1,32 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`app.tsx matches snapshot 1`] = `
-<p>
-  Hello, World!
-</p>
+<div
+  className="container"
+>
+  <div
+    className="conversation"
+  >
+    <div
+      className="messages"
+    >
+      <p
+        className="typing"
+      >
+        Typing...
+      </p>
+    </div>
+  </div>
+  <form
+    onSubmit={[Function]}
+  >
+    <textarea
+      className="textarea"
+      onChange={[Function]}
+      onKeyDown={[Function]}
+      placeholder="Type your message here"
+      value=""
+    />
+  </form>
+</div>
 `;
