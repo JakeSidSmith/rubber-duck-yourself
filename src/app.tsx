@@ -75,7 +75,7 @@ export default class App extends PureComponent<{}, AppState> {
             {this.state.typing && <p className="typing">Typing...</p>}
           </div>
         </div>
-        <form onSubmit={this.onSubmit}>
+        <form className="form" onSubmit={this.onSubmit}>
           <textarea
             className="textarea"
             placeholder="Type your message here"
