@@ -9,7 +9,6 @@
   "rules": {
     "prettier": true,
     "linebreak-style": [true, "LF"],
-    "semicolon": [true, "always", "ignore-interfaces"],
     "max-line-length": [true, 120],
     "indent": [true, "spaces"],
     "align": [
