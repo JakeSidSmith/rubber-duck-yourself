@@ -36,11 +36,12 @@ export const STANDARD_MESSAGES = INITIAL_MESSAGES.concat([
   'Tell me more',
 ]);
 
-export const LONG_MESSAGES = [
+export const LONG_MESSAGES = STANDARD_MESSAGES.concat([
   "I'm not sure I understand",
   'Any more details?',
   'What do you mean?',
   'Anything else?',
   'What next?',
   'And then',
-];
+  'Could you elaborate?',
+]);

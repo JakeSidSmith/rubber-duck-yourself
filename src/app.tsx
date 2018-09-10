@@ -2,6 +2,8 @@ import {
   ENTER_KEY_CODE,
   GREETINGS,
   INITIAL_MESSAGES,
+  INITIAL_QUESTIONS,
+  LONG_MESSAGES,
   STANDARD_MESSAGES,
 } from '^/constants';
 import { pickPseudoRandom, pickRandom } from '^/utils';
@@ -9,8 +11,8 @@ import React, { PureComponent } from 'react';
 
 interface AppState {
   value: string;
-  lastMessages: string[];
-  nextMessage: string;
+  lastBotMessages: string[];
+  lastUserMessage?: string;
   conversation: MessageProps[];
   typing: boolean;
 }
@@ -37,11 +39,8 @@ export default class App extends PureComponent<{}, AppState> {
   public constructor(props: any) {
     super(props);
 
-    const nextMessage = pickRandom(GREETINGS);
-
     this.state = {
-      lastMessages: [],
-      nextMessage,
+      lastBotMessages: [],
       value: '',
       conversation: [],
       typing: false,
@@ -110,6 +109,7 @@ export default class App extends PureComponent<{}, AppState> {
         },
       ],
       value: '',
+      lastUserMessage: this.state.value,
     });
 
     this.queueNewMessage();
@@ -138,37 +138,64 @@ export default class App extends PureComponent<{}, AppState> {
       typing: true,
     });
 
+    const message = this.pickNewMessage(this.state.lastBotMessages);
+
     this.timeout = window.setTimeout(
-      this.sendNewMessage,
-      200 + this.state.nextMessage.length * 50
+      () => this.sendNewMessage(message),
+      200 + message.length * 50
     );
   }
 
-  private sendNewMessage = () => {
-    const lastLastMessages = this.state.lastMessages;
-    const lastMessages = [
-      ...lastLastMessages.slice(
-        lastLastMessages.length > 4 ? lastLastMessages.length - 4 : 0
+  private pickNewMessage(lastBotMessages: string[]) {
+    const { length: conversationLength } = this.state.conversation;
+
+    if (lastBotMessages.length === 0) {
+      return pickRandom(GREETINGS);
+    }
+
+    if (lastBotMessages.length === 1) {
+      return pickPseudoRandom(INITIAL_MESSAGES, lastBotMessages);
+    }
+
+    if (lastBotMessages.length === 2) {
+      return pickRandom(INITIAL_QUESTIONS);
+    }
+
+    if (
+      conversationLength > 10 &&
+      this.state.lastUserMessage &&
+      this.state.lastUserMessage.length >= 50
+    ) {
+      console.log('LONG');
+      return pickPseudoRandom(LONG_MESSAGES, lastBotMessages);
+    }
+
+    return pickPseudoRandom(STANDARD_MESSAGES, lastBotMessages);
+  }
+
+  private sendNewMessage = (message: string) => {
+    const lastLastBotMessages = this.state.lastBotMessages;
+    const lastBotMessages = [
+      ...lastLastBotMessages.slice(
+        lastLastBotMessages.length > 4 ? lastLastBotMessages.length - 4 : 0
       ),
-      this.state.nextMessage,
+      message,
     ];
 
     this.setState({
       typing: false,
-      lastMessages,
+      lastBotMessages,
       conversation: [
         ...this.state.conversation,
         {
-          text: this.state.nextMessage,
+          text: message,
           bot: true,
         },
       ],
-      nextMessage: pickPseudoRandom(
-        this.state.conversation.length > 1
-          ? STANDARD_MESSAGES
-          : INITIAL_MESSAGES,
-        lastMessages
-      ),
     });
+
+    if (this.state.lastBotMessages.length === 2) {
+      this.queueNewMessage();
+    }
   };
 }
